@@ -1,0 +1,23 @@
+{
+  "name": "@chiba-claw/remotion",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "compositions": "remotion compositions src/index.ts"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.429",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.429"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "typescript": "^5.9.3"
+  }
+}

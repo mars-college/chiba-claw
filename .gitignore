@@ -1,0 +1,15 @@
+/.DS_Store
+/.env
+/outputs/*
+!/outputs/.gitkeep
+/.npm-cache/
+/.uv-cache/
+/skills/*/node_modules/
+/skills/*/.venv/
+/coverage/
+/.openclaw/
+/memory/
+/MEMORY.md
+.npm-cache/
+.openclaw/
+.uv-cache/

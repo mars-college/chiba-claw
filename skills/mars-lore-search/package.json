@@ -1,0 +1,9 @@
+{
+  "name": "@chiba-claw/mars-lore-search",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}
+
