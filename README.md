@@ -109,8 +109,10 @@ What it does:
 - builds `Dockerfile.openclaw` on top of `ghcr.io/openclaw/openclaw:latest`
 - adds the missing local toolchain this workspace expects inside Docker:
   `uv`, `python3 -m pip`, and `ffmpeg`
-- mounts this repo into the container as the OpenClaw workspace
+- mounts this repo into the container as the OpenClaw workspace at `/workspace`
 - persists OpenClaw state under `OPENCLAW_DOCKER_STATE_DIR` (default: `$HOME/.openclaw`)
+- runs the container as the invoking host UID/GID by default so the bootstrap can
+  write into the checked-out repo on the server
 - writes a generated `.openclaw-docker.env` with container-safe overrides
 - bootstraps the profile and agent inside a one-shot CLI container
 - starts the gateway as a long-running Compose service
@@ -135,6 +137,8 @@ The Docker image now includes the runtime pieces the repo's skill installers ass
 
 - upstream OpenClaw image: `openclaw`, `node`, `npm`, `pnpm`, `python3`, `curl`, `git`
 - repo Dockerfile additions: `uv`, `python3 -m pip`, `python3 -m venv`, `ffmpeg`
+
+The Docker wrapper auto-detects the host UID/GID and passes that through to Compose. If you cloned the repo with one user and are running Docker with another, you can override `OPENCLAW_DOCKER_UID` and `OPENCLAW_DOCKER_GID` in `.env`.
 
 The default Docker path still keeps `OPENCLAW_SKIP_SKILL_SETUP=1`, because some skills also assume sibling repos such as `../chiba-controller` and `../eden2` are available. If you mount or colocate those repos on the server and want the container bootstrap to run `scripts/setup-skills.sh`, set `OPENCLAW_SKIP_SKILL_SETUP=0` in `.env`.
 

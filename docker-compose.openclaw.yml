@@ -7,15 +7,15 @@ x-openclaw-common: &openclaw-common
       OPENCLAW_BASE_IMAGE: ${OPENCLAW_DOCKER_BASE_IMAGE:-ghcr.io/openclaw/openclaw:latest}
       UV_IMAGE: ${OPENCLAW_DOCKER_UV_IMAGE:-ghcr.io/astral-sh/uv:0.8.17}
   init: true
+  user: "${OPENCLAW_DOCKER_UID:?err}:${OPENCLAW_DOCKER_GID:?err}"
   working_dir: /workspace
   environment:
-    HOME: /home/node
-    XDG_CONFIG_HOME: /home/node/.openclaw
+    HOME: /state
+    XDG_CONFIG_HOME: /state/.openclaw
     OPENCLAW_ENV_FILE: /workspace/.openclaw-docker.env
   volumes:
-    - ${OPENCLAW_DOCKER_STATE_DIR:?err}:/home/node/.openclaw
+    - ${OPENCLAW_DOCKER_STATE_DIR:?err}:/state
     - ${OPENCLAW_HOST_WORKSPACE_DIR:?err}:/workspace
-    - ${OPENCLAW_HOST_WORKSPACE_DIR:?err}:/home/node/.openclaw/workspace
 
 services:
   openclaw-cli:
