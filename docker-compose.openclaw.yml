@@ -28,7 +28,7 @@ services:
   openclaw-gateway:
     <<: *openclaw-common
     entrypoint: ["/bin/bash", "-lc"]
-    command: ["openclaw --profile \"${OPENCLAW_PROFILE}\" gateway start"]
+    command: ["openclaw --profile \"${OPENCLAW_PROFILE}\" gateway run"]
     restart: unless-stopped
     ports:
       - "${OPENCLAW_GATEWAY_EXPOSE_HOST:-127.0.0.1}:${OPENCLAW_GATEWAY_PORT}:${OPENCLAW_GATEWAY_PORT}"
