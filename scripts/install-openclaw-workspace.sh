@@ -2,15 +2,16 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${OPENCLAW_ENV_FILE:-$ROOT_DIR/.env}"
 
-if [[ ! -f "$ROOT_DIR/.env" ]]; then
-  echo "missing $ROOT_DIR/.env" >&2
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "missing $ENV_FILE" >&2
   echo "copy .env.example to .env and fill in the values first" >&2
   exit 1
 fi
 
 # shellcheck disable=SC1091
-source "$ROOT_DIR/scripts/load-env.sh" "$ROOT_DIR/.env"
+source "$ROOT_DIR/scripts/load-env.sh" "$ENV_FILE"
 
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -102,7 +103,9 @@ if is_enabled "${OPENCLAW_ENABLE_DISCORD:-1}"; then
   openclaw --profile "$PROFILE" agents bind --agent "$AGENT_ID" --bind discord
 fi
 
-bash "$ROOT_DIR/scripts/setup-skills.sh"
+if ! is_enabled "${OPENCLAW_SKIP_SKILL_SETUP:-0}"; then
+  bash "$ROOT_DIR/scripts/setup-skills.sh"
+fi
 
 if is_enabled "${OPENCLAW_INSTALL_GATEWAY_SERVICE:-0}"; then
   openclaw --profile "$PROFILE" gateway install --force --runtime "$OPENCLAW_GATEWAY_RUNTIME"

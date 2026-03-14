@@ -1,0 +1,34 @@
+x-openclaw-common: &openclaw-common
+  image: ${OPENCLAW_DOCKER_IMAGE:-chibaclaw-openclaw:latest}
+  build:
+    context: .
+    dockerfile: Dockerfile.openclaw
+    args:
+      OPENCLAW_BASE_IMAGE: ${OPENCLAW_DOCKER_BASE_IMAGE:-ghcr.io/openclaw/openclaw:latest}
+      UV_IMAGE: ${OPENCLAW_DOCKER_UV_IMAGE:-ghcr.io/astral-sh/uv:0.8.17}
+  init: true
+  working_dir: /workspace
+  environment:
+    HOME: /home/node
+    XDG_CONFIG_HOME: /home/node/.openclaw
+    OPENCLAW_ENV_FILE: /workspace/.openclaw-docker.env
+  volumes:
+    - ${OPENCLAW_DOCKER_STATE_DIR:?err}:/home/node/.openclaw
+    - ${OPENCLAW_HOST_WORKSPACE_DIR:?err}:/workspace
+    - ${OPENCLAW_HOST_WORKSPACE_DIR:?err}:/home/node/.openclaw/workspace
+
+services:
+  openclaw-cli:
+    <<: *openclaw-common
+    entrypoint: ["/bin/bash", "-lc"]
+    command: ["sleep infinity"]
+    stdin_open: true
+    tty: true
+
+  openclaw-gateway:
+    <<: *openclaw-common
+    entrypoint: ["/bin/bash", "-lc"]
+    command: ["openclaw --profile \"${OPENCLAW_PROFILE}\" gateway start"]
+    restart: unless-stopped
+    ports:
+      - "${OPENCLAW_GATEWAY_EXPOSE_HOST:-127.0.0.1}:${OPENCLAW_GATEWAY_PORT}:${OPENCLAW_GATEWAY_PORT}"

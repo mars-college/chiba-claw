@@ -8,6 +8,7 @@
 /skills/*/.venv/
 /coverage/
 /.openclaw/
+/.openclaw-docker.env
 /memory/
 /MEMORY.md
 .npm-cache/

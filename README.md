@@ -100,6 +100,52 @@ What the installer does:
 - runs skill setup
 - optionally installs and starts the OpenClaw gateway service
 
+## Docker Compose Gateway
+
+If you want the OpenClaw gateway itself containerized on a local Ubuntu or Debian server, this repo includes a Docker Compose flow that mounts this repo as the workspace and persists the OpenClaw home dir on the host.
+
+What it does:
+
+- builds `Dockerfile.openclaw` on top of `ghcr.io/openclaw/openclaw:latest`
+- adds the missing local toolchain this workspace expects inside Docker:
+  `uv`, `python3 -m pip`, and `ffmpeg`
+- mounts this repo into the container as the OpenClaw workspace
+- persists OpenClaw state under `OPENCLAW_DOCKER_STATE_DIR` (default: `$HOME/.openclaw`)
+- writes a generated `.openclaw-docker.env` with container-safe overrides
+- bootstraps the profile and agent inside a one-shot CLI container
+- starts the gateway as a long-running Compose service
+- skips `scripts/setup-skills.sh` by default inside Docker so missing sibling repos and extra toolchains do not block the gateway bootstrap
+
+Bring it up:
+
+```bash
+bash scripts/openclaw-docker.sh up
+```
+
+Useful follow-ups:
+
+```bash
+bash scripts/openclaw-docker.sh build
+bash scripts/openclaw-docker.sh logs
+bash scripts/openclaw-docker.sh ps
+bash scripts/openclaw-docker.sh down
+```
+
+The Docker image now includes the runtime pieces the repo's skill installers assume are present:
+
+- upstream OpenClaw image: `openclaw`, `node`, `npm`, `pnpm`, `python3`, `curl`, `git`
+- repo Dockerfile additions: `uv`, `python3 -m pip`, `python3 -m venv`, `ffmpeg`
+
+The default Docker path still keeps `OPENCLAW_SKIP_SKILL_SETUP=1`, because some skills also assume sibling repos such as `../chiba-controller` and `../eden2` are available. If you mount or colocate those repos on the server and want the container bootstrap to run `scripts/setup-skills.sh`, set `OPENCLAW_SKIP_SKILL_SETUP=0` in `.env`.
+
+To access the Control UI from your laptop, tunnel the gateway port over SSH:
+
+```bash
+ssh -N -L 19789:127.0.0.1:19789 <user>@<server>
+```
+
+If you change `OPENCLAW_GATEWAY_PORT`, use that port in the tunnel command instead.
+
 ## Skills Only
 
 If you do not want the full OpenClaw workspace install and only want local skill dependencies and setup:

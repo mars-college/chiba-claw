@@ -3,9 +3,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CACHE_DIR="$ROOT_DIR/.npm-cache"
+ENV_FILE="${OPENCLAW_ENV_FILE:-$ROOT_DIR/.env}"
 
 # shellcheck disable=SC1091
-source "$ROOT_DIR/scripts/load-env.sh" "$ROOT_DIR/.env"
+source "$ROOT_DIR/scripts/load-env.sh" "$ENV_FILE"
 
 mkdir -p "$CACHE_DIR"
 

@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.git
+.openclaw
+.openclaw-docker.env
+.npm-cache
+.uv-cache
+MEMORY.md
+memory
+outputs
+scripts/__pycache__
+skills/*/.venv
+skills/*/node_modules
